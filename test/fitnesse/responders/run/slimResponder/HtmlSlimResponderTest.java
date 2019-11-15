@@ -50,11 +50,17 @@ public class HtmlSlimResponderTest {
     customComparatorRegistry = new CustomComparatorRegistry();
 
     responder = getSlimResponder(customComparatorRegistry);
-    responder.setFastTest(true);
+    final String DEFAULT_SLIM_SETUP = "!define TEST_RUNNER {fitnesse.slim.SlimService}\n!path classes";
+    String setup = System.getenv("FITNESSE_SLIM_SETUP");
+    if (null == setup) {
+      setup = DEFAULT_SLIM_SETUP;
+      responder.setFastTest(true);
+    }
     // Enforce the test runner here, to make sure we're talking to the right
     // system
+    //"!define COMMAND_PATTERN {goslim \\Users\\caust\\git\\goslim ./cmd/responder}"
     testPage = WikiPageUtil.addPage(context.getRootPage(), PathParser.parse("TestPage"),
-            "!define TEST_RUNNER {fitnesse.slim.SlimService}\n!path classes");
+      setup);
     SlimClientBuilder.clearSlimPortOffset();
   }
 
@@ -231,11 +237,25 @@ public class HtmlSlimResponderTest {
   @Test
   public void tableWithSymbolSubstitution() throws Exception {
     getResultsForPageContents("!|DT:fitnesse.slim.test.TestSlim|\n"
-        + "|string|getStringArg?|\n" + "|Bob|$V=|\n" + "|$V|$V|\n");
+      + "|string|getStringArg?|\n"
+      + "|Bob|$V=|\n"
+      + "|$V|$V|\n"
+      + "|4|$FOUR=|\n"
+      + "|2|$TWO=|\n"
+      + "|$FOUR$TWO|42|\n"
+      + "|Pre$FOUR$TWO|Pre42|\n"
+      + "|$FOUR$TWO.Post|42.Post|\n"
+      + "|0$FOUR1$TWO3|04123|\n"
+    );
     TableScanner ts = getScannedResults();
     Table dt = ts.getTable(0);
     assertEquals("$V<-[Bob]", unescape(dt.getCellContents(1, 2)));
     assertEquals("$V->[Bob]", unescape(dt.getCellContents(0, 3)));
+    assertEquals("<span class=\"pass\">$V->[Bob]</span>", unescape(dt.getCellContents(1, 3)));
+    assertEquals("<span class=\"pass\">42</span>", unescape(dt.getCellContents(1, 6)));
+    assertEquals("<span class=\"pass\">Pre42</span>", unescape(dt.getCellContents(1, 7)));
+    assertEquals("<span class=\"pass\">42.Post</span>", unescape(dt.getCellContents(1, 8)));
+    assertEquals("<span class=\"pass\">04123</span>", unescape(dt.getCellContents(1, 9)));
   }
 
   protected TableScanner getScannedResults() throws Exception {
@@ -258,6 +278,22 @@ public class HtmlSlimResponderTest {
     assertEquals("<span class=\"pass\">$A->[3]<4<$B->[5]</span>",
         unescape(dt.getCellContents(1, 5)));
   }
+
+//  @Test
+//  public void symbolReplacement() throws Exception {
+//    getResultsForPageContents(
+//      "!|DT:fitnesse.slim.test.TestSlim|\n"
+//        + "|string|getStringArg?|\n"
+//        + "|3|$A=|\n"
+//        + "|5|$B=|\n"
+//        + "|$A$B|35|\n"
+//        + "|Left$A$B|35|\n"
+//    );
+//    TableScanner ts = getScannedResults();
+//    Table dt = ts.getTable(0);
+//    assertEquals("<span class=\"pass\">35</span>", unescape(dt.getCellContents(1, 4)));
+//    assertEquals("<span class=\"pass\">35</span>", unescape(dt.getCellContents(1, 5)));
+//  }
 
   @Test
   public void tableWithExpression() throws Exception {
