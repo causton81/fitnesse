@@ -1,4 +1,29 @@
 !2 ${FITNESSE_VERSION}
+
+!2 20191110
+ * Improved failure navigator at top-right after running tests: some tests were missed, others were counted twice. #1246
+
+!2 20190716
+ * Fixed issue allowing multiple symbolic links to point from a single page the same target page ([[1234][https://github.com/unclebob/fitnesse/issues/1234]])
+ * Allow 'Where Used' to also find pages having a symbolic link to the current page. ([[1237][https://github.com/unclebob/fitnesse/pull/1237]])
+ * Make page 'Rename' and 'Move' also update symbolic links affected by the change. ([[1238][https://github.com/unclebob/fitnesse/pull/1238]])
+
+!2 20190628
+ * Allow all uncle !-SuiteSetUp-! and !-SuiteTearDown-! pages to be run, instead of only the nearest one, by setting ALL_UNCLE_SUITE_SETUPS ([[1233][https://github.com/unclebob/fitnesse/pull/1233]]). This also ensures that all tests are executed in order, fixing ([[1229][https://github.com/unclebob/fitnesse/issues/1229]]).
+
+!2 20190620
+ * Allow plugins to override the default wiki theme (i.e. bootstrap) ([[1227][https://github.com/unclebob/fitnesse/pull/1227]])
+
+!2 20190508
+ * Optimized performance of Slim (javascript) expressions ([[1220][https://github.com/unclebob/fitnesse/pull/1220]])
+ * Issues fixed:
+   * Do not set exit code to error when creating a symbolic link from command line ([[1223][https://github.com/unclebob/fitnesse/issues/1223]])
+
+!2 20190428
+ * Issues fixed:
+  * Improved error message when Slim 'script' table has row with too few columns ([[1221][https://github.com/unclebob/fitnesse/issues/1221]])
+
+!2 20190421
  * Issues fixed:
   * Fix table of contents for suites containing symbolic links to multiple external roots ([[1218][https://github.com/unclebob/fitnesse/pull/1218]])
 
