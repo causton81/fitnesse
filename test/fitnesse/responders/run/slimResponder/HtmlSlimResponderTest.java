@@ -279,21 +279,21 @@ public class HtmlSlimResponderTest {
         unescape(dt.getCellContents(1, 5)));
   }
 
-//  @Test
-//  public void symbolReplacement() throws Exception {
-//    getResultsForPageContents(
-//      "!|DT:fitnesse.slim.test.TestSlim|\n"
-//        + "|string|getStringArg?|\n"
-//        + "|3|$A=|\n"
-//        + "|5|$B=|\n"
-//        + "|$A$B|35|\n"
-//        + "|Left$A$B|35|\n"
-//    );
-//    TableScanner ts = getScannedResults();
-//    Table dt = ts.getTable(0);
-//    assertEquals("<span class=\"pass\">35</span>", unescape(dt.getCellContents(1, 4)));
-//    assertEquals("<span class=\"pass\">35</span>", unescape(dt.getCellContents(1, 5)));
-//  }
+  @Test
+  public void symbolReplacement() throws Exception {
+    getResultsForPageContents(
+      "!|DT:fitnesse.slim.test.TestSlim|\n"
+        + "|string|getStringArg?|\n"
+        + "|3|$A=|\n"
+        + "|5|$B=|\n"
+        + "|$A$B|35|\n"
+        + "|Left$A$B|Left35|\n"
+    );
+    TableScanner ts = getScannedResults();
+    Table dt = ts.getTable(0);
+    assertEquals("<span class=\"pass\">35</span>", unescape(dt.getCellContents(1, 4)));
+    assertEquals("<span class=\"pass\">Left35</span>", unescape(dt.getCellContents(1, 5)));
+  }
 
   @Test
   public void tableWithExpression() throws Exception {
@@ -423,7 +423,7 @@ public class HtmlSlimResponderTest {
       return expected.equalsIgnoreCase(actual);
     }
   }
-	  
+
   class ExceptionMessageComparator implements CustomComparator {
     @Override
     public boolean matches(String actual, String expected) {
